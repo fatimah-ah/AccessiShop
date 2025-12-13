@@ -7,13 +7,24 @@ import jwt from "jsonwebtoken";
 // SIGNUP
 // ------------------------
 export const signupUser = async (req, res) => {
-    console.log("req.body:", req.body);
+  console.log("req.body:", req.body);
   try {
     const { name, email, password } = req.body;
 
     // Check required fields
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Please fill all fields" });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
     }
 
     // Check if user already exists
@@ -56,6 +67,12 @@ export const loginUser = async (req, res) => {
     // Check all fields
     if (!email || !password) {
       return res.status(400).json({ message: "Please fill all fields" });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
     }
 
     // Find user

@@ -6,6 +6,7 @@ import {
   updateProduct,
   deleteProduct
 } from "../controllers/productController.js";
+import { verifyAdmin } from "../middleware/verifyAdmin.js";
 
 const router = express.Router();
 
@@ -13,9 +14,9 @@ const router = express.Router();
 router.get("/", getAllProducts);        // list all products
 router.get("/:id", getProductById);    // single product detail
 
-// Admin routes (later you can add auth middleware)
-router.post("/", createProduct);        // add product
-router.put("/:id", updateProduct);     // update product
-router.delete("/:id", deleteProduct);  // delete product
+// Admin routes - protected with admin middleware
+router.post("/", verifyAdmin, createProduct);        // add product
+router.put("/:id", verifyAdmin, updateProduct);     // update product
+router.delete("/:id", verifyAdmin, deleteProduct);  // delete product
 
 export default router;

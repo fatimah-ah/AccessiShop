@@ -31,6 +31,22 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const { title, description, simpleDescription, price, category, image, keywords, stock } = req.body;
+
+    // Validate required fields
+    if (!title || !description || !simpleDescription || !price || !category || !image) {
+      return res.status(400).json({ message: "Please provide all required fields: title, description, simpleDescription, price, category, image" });
+    }
+
+    // Validate price
+    if (typeof price !== 'number' || price <= 0) {
+      return res.status(400).json({ message: "Price must be a positive number" });
+    }
+
+    // Validate stock if provided
+    if (stock !== undefined && (typeof stock !== 'number' || stock < 0)) {
+      return res.status(400).json({ message: "Stock must be a non-negative number" });
+    }
+
     const newProduct = await Product.create({
       title,
       description,
@@ -57,6 +73,16 @@ export const updateProduct = async (req, res) => {
 
     const { title, description, simpleDescription, price, category, image, keywords, stock } = req.body;
 
+    // Validate price if provided
+    if (price !== undefined && (typeof price !== 'number' || price <= 0)) {
+      return res.status(400).json({ message: "Price must be a positive number" });
+    }
+
+    // Validate stock if provided
+    if (stock !== undefined && (typeof stock !== 'number' || stock < 0)) {
+      return res.status(400).json({ message: "Stock must be a non-negative number" });
+    }
+
     product.title = title || product.title;
     product.description = description || product.description;
     product.simpleDescription = simpleDescription || product.simpleDescription;
@@ -64,7 +90,7 @@ export const updateProduct = async (req, res) => {
     product.category = category || product.category;
     product.image = image || product.image;
     product.keywords = keywords || product.keywords;
-    product.stock = stock || product.stock;
+    product.stock = stock !== undefined ? stock : product.stock;
 
     const updatedProduct = await product.save();
     res.json({ message: "Product updated!", product: updatedProduct });

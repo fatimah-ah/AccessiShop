@@ -21,7 +21,16 @@ export const getCart = async (req, res) => {
 export const addItemToCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
-    if (!productId || !quantity) return res.status(400).json({ message: "Product and quantity required" });
+
+    // Validate required fields
+    if (!productId || !quantity) {
+      return res.status(400).json({ message: "Product and quantity required" });
+    }
+
+    // Validate quantity
+    if (typeof quantity !== 'number' || quantity <= 0) {
+      return res.status(400).json({ message: "Quantity must be a positive number" });
+    }
 
     let cart = await Cart.findOne({ userId: req.user._id });
     if (!cart) cart = await Cart.create({ userId: req.user._id, items: [] });
