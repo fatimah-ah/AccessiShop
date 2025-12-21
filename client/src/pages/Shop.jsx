@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
+import Input from '../components/Input';
 import axios from 'axios';
 import '../Layout.css';
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [categories, setCategories] = useState(['All']);
     const [activeCategory, setActiveCategory] = useState('All');
     const [loading, setLoading] = useState(true);
@@ -34,13 +36,27 @@ const Shop = () => {
         fetchProducts();
     }, []);
 
+    useEffect(() => {
+        let result = products;
+
+        // Filter by category
+        if (activeCategory !== 'All') {
+            result = result.filter(p => p.category === activeCategory);
+        }
+
+        // Filter by search query
+        if (searchQuery) {
+            result = result.filter(p =>
+                p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.category.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        setFilteredProducts(result);
+    }, [searchQuery, activeCategory, products]);
+
     const handleCategoryClick = (category) => {
         setActiveCategory(category);
-        if (category === 'All') {
-            setFilteredProducts(products);
-        } else {
-            setFilteredProducts(products.filter(p => p.category === category));
-        }
     };
 
     return (
@@ -53,6 +69,16 @@ const Shop = () => {
                     <h1 className="page-title">Shop All Products</h1>
                     <p className="page-subtitle">Browse our complete accessible catalog.</p>
                 </header>
+
+                <div className="search-section" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+                    <Input
+                        label="Search Shop"
+                        placeholder="Search by name or category..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        enableVoice={true}
+                    />
+                </div>
 
                 <div className="shop-layout" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
 
@@ -101,6 +127,7 @@ const Shop = () => {
                             <>
                                 <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>
                                     Showing {filteredProducts.length} results
+                                    {searchQuery && ` for "${searchQuery}"`}
                                 </p>
                                 <div
                                     style={{
@@ -114,7 +141,9 @@ const Shop = () => {
                                     ))}
                                 </div>
                                 {filteredProducts.length === 0 && (
-                                    <p>No products found in this category.</p>
+                                    <p style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+                                        No products found matching your criteria.
+                                    </p>
                                 )}
                             </>
                         )}

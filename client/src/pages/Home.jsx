@@ -5,8 +5,8 @@ import Footer from '../components/Footer';
 import HeroCarousel from '../components/HeroCarousel';
 import ProductCard from '../components/ProductCard';
 import Input from '../components/Input';
+import ServicePoints from '../components/ServicePoints';
 import axios from 'axios';
-import { FaSearch } from 'react-icons/fa';
 import '../Layout.css';
 
 const Home = () => {
@@ -16,9 +16,6 @@ const Home = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Sample images for carousel (using placeholders or external URLs if permitted, 
-    // sticking to solid colors/gradients if no assets. Using Unsplash source for demo)
-    // Reliable sample images for carousel
     const heroImages = [
         'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1200', // Shoes
         'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1200', // Watch
@@ -38,11 +35,9 @@ const Home = () => {
             setUser(JSON.parse(storedUser));
         }
 
-        // Fetch products
         const fetchProducts = async () => {
             try {
                 const res = await axios.get('/api/products');
-                // Store all, but we will slice for display
                 setProducts(res.data);
                 setLoading(false);
             } catch (err) {
@@ -54,6 +49,11 @@ const Home = () => {
         fetchProducts();
     }, [navigate]);
 
+    const filteredProducts = products.filter(product =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className="app-layout">
             <a href="#main-content" className="skip-link">
@@ -63,48 +63,44 @@ const Home = () => {
             <Navbar />
 
             <main id="main-content" className="main-content">
-
-                {/* Greeting Section */}
                 <header className="page-header" style={{ textAlign: 'center' }}>
                     <h1 className="page-title">
-                        Hello, {user ? user.name : 'Shopper'} 👋
+                        Hello, {user ? user.name : 'Shopper'}
                     </h1>
                     <p className="page-subtitle">
                         Welcome back to AccessiShop.
                     </p>
                 </header>
 
-                {/* Hero Carousel */}
                 <HeroCarousel images={heroImages} />
 
-                {/* Search Section */}
                 <section
                     className="search-section"
                     aria-label="Search Products"
                     style={{ maxWidth: '600px', margin: '0 auto var(--spacing-2xl) auto' }}
                 >
-                    <div style={{ position: 'relative' }}>
-                        <Input
-                            label="Find Products"
-                            placeholder="Search for shoes, electronics..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            enableVoice={true}
-                        />
-                        {/* Visual Icon overlay if needed, but Input has voice icon */}
-                    </div>
+                    <Input
+                        label="Find Products"
+                        placeholder="Search for shoes, electronics..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        enableVoice={true}
+                    />
                 </section>
 
-                {/* Featured Products Section */}
                 <section className="featured-products" style={{ marginBottom: 'var(--spacing-2xl)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.5rem' }}>Featured Products</h2>
-                        <button
-                            className="btn btn-outline"
-                            onClick={() => navigate('/shop')}
-                        >
-                            View All
-                        </button>
+                        <h2 style={{ fontSize: '1.5rem' }}>
+                            {searchQuery ? `Search Results for "${searchQuery}"` : 'Featured Products'}
+                        </h2>
+                        {!searchQuery && (
+                            <button
+                                className="btn btn-outline"
+                                onClick={() => navigate('/shop')}
+                            >
+                                View All
+                            </button>
+                        )}
                     </div>
 
                     {loading ? (
@@ -117,30 +113,37 @@ const Home = () => {
                                 gap: '2rem'
                             }}
                         >
-                            {products.slice(0, 12).map(product => (
+                            {filteredProducts.slice(0, 12).map(product => (
                                 <ProductCard key={product._id} product={product} />
                             ))}
+                            {filteredProducts.length === 0 && (
+                                <p style={{ gridColumn: '1/-1', textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                                    No products found matching your search.
+                                </p>
+                            )}
                         </div>
                     )}
                 </section>
 
-                {/* Dashboard / Quick Actions Section */}
                 <section className="dashboard-grid">
-                    <div className="auth-card" style={{ maxWidth: '100%', textAlign: 'center' }}>
-                        <h2>Explore More</h2>
-                        <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-                            Visit our shop to see the full collection.
-                        </p>
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => navigate('/shop')}
-                        >
-                            Go to Shop
-                        </button>
-                    </div>
+                    {!searchQuery && (
+                        <div className="auth-card" style={{ maxWidth: '100%', textAlign: 'center' }}>
+                            <h2>Explore More</h2>
+                            <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
+                                Visit our shop to see the full collection.
+                            </p>
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => navigate('/shop')}
+                            >
+                                Go to Shop
+                            </button>
+                        </div>
+                    )}
                 </section>
             </main>
 
+            <ServicePoints />
             <Footer />
         </div>
     );

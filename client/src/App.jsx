@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
+import ProductView from './pages/ProductView';
 import './Auth.css';
 
 /**
@@ -16,6 +17,7 @@ import './Auth.css';
  * - /signup → Signup page
  * - /home → Home page
  * - /shop → Shop page
+ * - /product/:id → Product details
  */
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/shop" element={<Shop />} />
+                    <Route path="/product/:id" element={<ProductView />} />
                 </Routes>
             </div>
         </Router>

@@ -1,97 +1,70 @@
 import React from 'react';
-import { FaShoppingCart, FaEye } from 'react-icons/fa';
+import { FaShoppingCart, FaEye, FaRegHeart, FaExchangeAlt, FaStar } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import '../Layout.css';
 
 const ProductCard = ({ product }) => {
-    // Determine image source - handle local vs remote if needed, for now assuming direct URL
-    // Fallback image if product.image is missing or broken could be added here
+    const navigate = useNavigate();
     const imageSrc = product.image || 'https://via.placeholder.com/300x200?text=No+Image';
+
+    const handleNavigate = (e) => {
+        // Prevent navigation if clicking action buttons
+        if (e.target.closest('.card-action-btn') || e.target.closest('.btn-primary')) return;
+        navigate(`/product/${product._id}`);
+    };
 
     return (
         <article
             className="product-card"
-            style={{
-                background: 'white',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-sm)',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                height: '100%'
+            onClick={handleNavigate}
+            tabIndex="0"
+            onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    handleNavigate(e);
+                }
             }}
+            aria-label={`View details for ${product.title}`}
         >
-            <div
-                className="product-image-container"
-                style={{
-                    height: '200px',
-                    overflow: 'hidden',
-                    position: 'relative'
-                }}
-            >
+            <div className="card-image-wrapper">
+                <span className="card-badge discount">40% off</span>
+
+                <div className="card-actions-overlay">
+                    <button className="card-action-btn" aria-label="Add to wishlist"><FaRegHeart /></button>
+                    <button className="card-action-btn" aria-label="Compare product"><FaExchangeAlt /></button>
+                    <button
+                        className="card-action-btn"
+                        aria-label="Quick view"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/product/${product._id}`);
+                        }}
+                    >
+                        <FaEye />
+                    </button>
+                </div>
+
                 <img
                     src={imageSrc}
                     alt={product.title}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s'
-                    }}
+                    className="card-image"
                 />
             </div>
 
-            <div className="product-details" style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <span
-                    className="product-category"
-                    style={{
-                        fontSize: '0.8rem',
-                        color: 'var(--text-secondary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
-                        marginBottom: '0.5rem',
-                        display: 'block'
-                    }}
-                >
-                    {product.category}
-                </span>
+            <div className="card-content">
+                <span className="card-category">{product.category}</span>
+                <h3 className="card-title">{product.title}</h3>
 
-                <h3
-                    style={{
-                        fontSize: '1.2rem',
-                        margin: '0 0 0.5rem 0',
-                        color: 'var(--text-primary)'
-                    }}
-                >
-                    {product.title}
-                </h3>
+                <div className="card-rating">
+                    <FaStar color="#FFD700" />
+                    <span className="rating-val">4.8</span>
+                </div>
 
-                <p
-                    style={{
-                        color: 'var(--color-primary)',
-                        fontWeight: 'bold',
-                        fontSize: '1.1rem',
-                        marginTop: 'auto'
-                    }}
-                >
-                    ${product.price.toFixed(2)}
-                </p>
-
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                    <button
-                        className="btn btn-outline"
-                        aria-label={`View details for ${product.title}`}
-                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                    >
-                        <FaEye /> View
-                    </button>
-                    <button
-                        className="btn btn-primary"
-                        aria-label={`Add ${product.title} to cart`}
-                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                    >
-                        <FaShoppingCart /> Add
-                    </button>
+                <div className="card-footer">
+                    <div className="card-price-container">
+                        <span className="card-price">${product.price.toFixed(2)}</span>
+                        <span className="card-price-original">${(product.price * 1.5).toFixed(2)}</span>
+                    </div>
+                    {/* Optional: Add to Cart button if needed, but the image shows a cleaner look with icons */}
                 </div>
             </div>
         </article>
