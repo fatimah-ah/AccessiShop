@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../Auth.css';
 
 /**
  * Welcome Screen - Landing Page
@@ -21,20 +22,22 @@ const Welcome = () => {
                     Accessible e-commerce for everyone
                 </p>
                 <p className="app-description">
-                    Shop with ease using our clean interface, optional voice input,
-                    and accessibility-first design.
+                    Shop with ease using our clean interface, voice commands,
+                    and built-in accessibility features.
                 </p>
 
                 <div className="button-group">
                     <button
-                        className="btn btn-primary"
+                        className="btn btn-primary btn-full"
                         onClick={() => navigate('/login')}
+                        aria-label="Login to your account"
                     >
                         Login
                     </button>
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-secondary btn-full"
                         onClick={() => navigate('/signup')}
+                        aria-label="create a new account"
                     >
                         Sign Up
                     </button>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { FaMicrophone, FaStop } from 'react-icons/fa';
 
 /**
  * Reusable Input Component with Optional Voice Input
@@ -96,7 +97,7 @@ const Input = ({
                         aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
                         title={isListening ? 'Stop listening' : 'Click to speak'}
                     >
-                        {isListening ? '⏹' : '🎤'}
+                        {isListening ? <FaStop /> : <FaMicrophone />}
                     </button>
                 )}
             </div>

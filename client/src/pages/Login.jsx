@@ -70,7 +70,7 @@ const Login = () => {
 
             // Redirect after short delay
             setTimeout(() => {
-                navigate('/'); // Will redirect to main app later
+                navigate('/home');
             }, 1500);
         } else {
             setMessage({ text: result.message, type: 'error' });
