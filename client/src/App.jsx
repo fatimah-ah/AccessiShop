@@ -9,6 +9,7 @@ import ProductView from './pages/ProductView';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import { CartProvider } from './context/CartContext';
+import VoiceAssistant from './components/VoiceAssistant';
 import './Auth.css';
 
 /**
@@ -38,6 +39,7 @@ function App() {
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/checkout" element={<Checkout />} />
                     </Routes>
+                    <VoiceAssistant />
                 </div>
             </Router>
         </CartProvider>

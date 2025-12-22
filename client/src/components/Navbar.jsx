@@ -18,18 +18,6 @@ const Navbar = () => {
 
     return (
         <header className="navbar-wrapper">
-            <div className="top-bar">
-                <div className="top-bar-contact">
-                    Call Us: +123-456-789 | Sign up and GET 25% OFF for your first order. <Link to="/signup" style={{ color: 'var(--color-accent)', fontWeight: '700' }}>Sign up now</Link>
-                </div>
-                <div className="top-bar-links">
-                    <a href="#" className="top-bar-link">FB</a>
-                    <a href="#" className="top-bar-link">TW</a>
-                    <a href="#" className="top-bar-link">IG</a>
-                    <a href="#" className="top-bar-link">YT</a>
-                </div>
-            </div>
-
             <nav className="navbar" role="navigation" aria-label="Main Navigation">
                 <Link to="/home" className="brand-link" aria-label="AccessiShop Home">
                     AccessiShop

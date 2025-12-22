@@ -1,4 +1,4 @@
-import { FaShoppingCart, FaEye, FaRegHeart, FaExchangeAlt, FaStar } from 'react-icons/fa';
+import { FaShoppingCart, FaEye, FaRegHeart, FaMicrophone, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../Layout.css';
@@ -12,6 +12,13 @@ const ProductCard = ({ product }) => {
         // Prevent navigation if clicking action buttons or Add to Cart
         if (e.target.closest('.card-action-btn') || e.target.closest('.btn-cart-small')) return;
         navigate(`/product/${product._id}`);
+    };
+
+    const handleVoiceRead = (e) => {
+        e.stopPropagation();
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = `Product: ${product.title}. Price: ${product.price.toFixed(2)} dollars. Category: ${product.category}. Description: ${product.description || 'No description available.'}`;
+        window.speechSynthesis.speak(msg);
     };
 
     return (
@@ -31,7 +38,13 @@ const ProductCard = ({ product }) => {
 
                 <div className="card-actions-overlay">
                     <button className="card-action-btn" aria-label="Add to wishlist"><FaRegHeart /></button>
-                    <button className="card-action-btn" aria-label="Compare product"><FaExchangeAlt /></button>
+                    <button
+                        className="card-action-btn voice-read-btn"
+                        aria-label="Read product details"
+                        onClick={handleVoiceRead}
+                    >
+                        <FaMicrophone />
+                    </button>
                     <button
                         className="card-action-btn"
                         aria-label="Quick view"

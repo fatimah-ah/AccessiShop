@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
@@ -10,6 +11,7 @@ const Shop = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const location = useLocation();
     const [categories, setCategories] = useState(['All']);
     const [activeCategory, setActiveCategory] = useState('All');
     const [loading, setLoading] = useState(true);
@@ -35,6 +37,15 @@ const Shop = () => {
 
         fetchProducts();
     }, []);
+
+    // Handle initial search from URL
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const q = params.get('search');
+        if (q) {
+            setSearchQuery(q);
+        }
+    }, [location.search]);
 
     useEffect(() => {
         let result = products;

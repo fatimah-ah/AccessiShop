@@ -214,21 +214,6 @@ const ProductView = () => {
                             </div>
                         </div>
 
-                        {/* Info Block (Warranty, Shipping, Return) */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', marginTop: '2rem', padding: '1.5rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-lg)' }}>
-                            <div>
-                                <h4 style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Warranty Info</h4>
-                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>1-year international warranty.</p>
-                            </div>
-                            <div>
-                                <h4 style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Shipping</h4>
-                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Free shipping over $100.</p>
-                            </div>
-                            <div>
-                                <h4 style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Return</h4>
-                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>30-day easy returns.</p>
-                            </div>
-                        </div>
 
                         {isSpeakSupported && (
                             <button
@@ -274,10 +259,9 @@ const ProductView = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Material</td><td>Solid Wood & Premium Leather</td></tr>
-                                        <tr><td>Weight</td><td>18.5 Kilograms</td></tr>
-                                        <tr><td>Dimensions</td><td>24.5"D x 26.8"W x 34.2"H</td></tr>
-                                        <tr><td>Warranty</td><td>2 Years Manufacturer Warranty</td></tr>
+                                        <tr><td>Warranty Info</td><td>1-year international warranty</td></tr>
+                                        <tr><td>Shipping</td><td>Free shipping over $100</td></tr>
+                                        <tr><td>Return</td><td>30-day easy returns</td></tr>
                                         <tr><td>Origin</td><td>Imported</td></tr>
                                     </tbody>
                                 </table>
