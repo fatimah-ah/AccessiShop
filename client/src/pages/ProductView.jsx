@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from '../context/CartContext';
 import { FaStar, FaMinus, FaPlus, FaShoppingCart, FaBolt, FaArrowLeft, FaChevronLeft, FaChevronRight, FaRegHeart, FaShareAlt } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -11,6 +12,7 @@ import '../Layout.css';
 const ProductView = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { addToCart } = useCart();
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +20,8 @@ const ProductView = () => {
     const [activeTab, setActiveTab] = useState('info');
     const [isSpeakSupported, setIsSpeakSupported] = useState(false);
     const [selectedColor, setSelectedColor] = useState('Brown');
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [shareMessage, setShareMessage] = useState('');
 
     useEffect(() => {
         setIsSpeakSupported('speechSynthesis' in window);
@@ -54,6 +58,25 @@ const ProductView = () => {
         if (type === 'dec' && quantity > 1) setQuantity(prev => prev - 1);
     };
 
+    // Mock images list for navigation demo
+    const productImages = product ? [product.image, product.image, product.image, product.image] : [];
+
+    const handleImageNav = (direction) => {
+        if (direction === 'next') {
+            setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+        } else {
+            setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
+        }
+    };
+
+    const handleShare = () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            setShareMessage('Link copied!');
+            setTimeout(() => setShareMessage(''), 2000);
+        });
+    };
+
     if (loading) return <div className="loading-state">Loading...</div>;
     if (!product) return <div className="error-state">Product not found.</div>;
 
@@ -75,17 +98,29 @@ const ProductView = () => {
                     <div className="product-view-gallery">
                         <div className="main-image-wrapper" style={{ position: 'relative' }}>
                             <img
-                                src={product.image}
-                                alt={product.title}
+                                src={productImages[currentImageIndex]}
+                                alt={`${product.title} - View ${currentImageIndex + 1}`}
                                 className="main-product-image"
                             />
-                            <button className="gallery-nav-btn prev" aria-label="Previous image"><FaChevronLeft /></button>
-                            <button className="gallery-nav-btn next" aria-label="Next image"><FaChevronRight /></button>
+                            <button className="gallery-nav-btn prev" onClick={() => handleImageNav('prev')} aria-label="Previous image"><FaChevronLeft /></button>
+                            <button className="gallery-nav-btn next" onClick={() => handleImageNav('next')} aria-label="Next image"><FaChevronRight /></button>
                         </div>
                         <div className="thumbnails-list" style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className={`thumbnail ${i === 1 ? 'active' : ''}`} style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: i === 1 ? '2px solid var(--color-primary)' : '1px solid var(--nav-border)' }}>
-                                    <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            {productImages.map((img, i) => (
+                                <div
+                                    key={i}
+                                    className={`thumbnail ${i === currentImageIndex ? 'active' : ''}`}
+                                    onClick={() => setCurrentImageIndex(i)}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: 'var(--radius-md)',
+                                        overflow: 'hidden',
+                                        cursor: 'pointer',
+                                        border: i === currentImageIndex ? '2px solid var(--color-primary)' : '1px solid var(--nav-border)'
+                                    }}
+                                >
+                                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             ))}
                         </div>
@@ -143,11 +178,22 @@ const ProductView = () => {
                                 <button onClick={() => handleQuantityChange('inc')} aria-label="Increase quantity" className="qty-btn"><FaPlus /></button>
                             </div>
 
-                            <button className="btn btn-primary" style={{ flex: 1, height: '56px' }}>
-                                Add To Cart
+                            <button
+                                className="btn btn-primary"
+                                style={{ flex: 1, height: '56px' }}
+                                onClick={() => addToCart(product, quantity)}
+                            >
+                                <FaShoppingCart style={{ marginRight: '0.5rem' }} /> Add To Cart
                             </button>
 
-                            <button className="btn btn-accent" style={{ height: '56px', padding: '0 2rem' }}>
+                            <button
+                                className="btn btn-accent"
+                                style={{ height: '56px', padding: '0 2rem' }}
+                                onClick={() => {
+                                    addToCart(product, quantity);
+                                    navigate('/cart');
+                                }}
+                            >
                                 Buy Now
                             </button>
 
@@ -158,12 +204,29 @@ const ProductView = () => {
 
                         <div className="product-meta-info" style={{ marginTop: '2.5rem', borderTop: '1px solid var(--nav-border)', paddingTop: '1.5rem', display: 'grid', gap: '0.5rem', fontSize: '0.95rem' }}>
                             <p><strong>SKU:</strong> F-INC8765-ABC</p>
-                            <p><strong>Tags:</strong> Furniture, Office, Gaming Chair, Chair</p>
+                            <p><strong>Tags:</strong> {product.category}, Premium, Sustainable</p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
                                 <strong>Share:</strong>
-                                <div style={{ display: 'flex', gap: '1rem', color: 'var(--text-secondary)' }}>
-                                    <FaShareAlt cursor="pointer" />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <FaShareAlt cursor="pointer" onClick={handleShare} title="Copy Link" />
+                                    {shareMessage && <span style={{ fontSize: '0.8rem', color: 'var(--color-primary)' }}>{shareMessage}</span>}
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Info Block (Warranty, Shipping, Return) */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', marginTop: '2rem', padding: '1.5rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-lg)' }}>
+                            <div>
+                                <h4 style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Warranty Info</h4>
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>1-year international warranty.</p>
+                            </div>
+                            <div>
+                                <h4 style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Shipping</h4>
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Free shipping over $100.</p>
+                            </div>
+                            <div>
+                                <h4 style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Return</h4>
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>30-day easy returns.</p>
                             </div>
                         </div>
 
@@ -206,23 +269,41 @@ const ProductView = () => {
                                 <table className="specs-table">
                                     <thead>
                                         <tr>
-                                            <th>Feature</th>
-                                            <th>Description</th>
+                                            <th>Attribute</th>
+                                            <th>Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Seat Material</td><td>Leather</td></tr>
-                                        <tr><td>Color</td><td>Black, Brown, Grey, Green, Blue</td></tr>
-                                        <tr><td>Item Weight</td><td>25 Kilograms</td></tr>
-                                        <tr><td>Dimensions</td><td>21"D x 21"W x 48"H</td></tr>
-                                        <tr><td>Finish</td><td>K-Design</td></tr>
+                                        <tr><td>Material</td><td>Solid Wood & Premium Leather</td></tr>
+                                        <tr><td>Weight</td><td>18.5 Kilograms</td></tr>
+                                        <tr><td>Dimensions</td><td>24.5"D x 26.8"W x 34.2"H</td></tr>
+                                        <tr><td>Warranty</td><td>2 Years Manufacturer Warranty</td></tr>
+                                        <tr><td>Origin</td><td>Imported</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         )}
                         {activeTab === 'review' && (
-                            <div className="reviews-panel">
-                                <p>No reviews yet. Be the first to review this product!</p>
+                            <div className="reviews-panel" style={{ display: 'grid', gap: '2rem' }}>
+                                {[
+                                    { name: 'Sarah Johnson', date: 'Oct 12, 2024', rating: 5, comment: 'Absolutely love this piece! The quality exceeded my expectations and it looks stunning in my living room.' },
+                                    { name: 'Michael Chen', date: 'Sep 28, 2024', rating: 4, comment: 'Very comfortable and easy to assemble. The color is slightly darker than the photo, but still beautiful.' },
+                                    { name: 'Emily Davis', date: 'Aug 15, 2024', rating: 5, comment: 'Perfect addition to my office. The ergonomic support is great for long working hours.' }
+                                ].map((rev, idx) => (
+                                    <div key={idx} className="review-item" style={{ borderBottom: '1px solid var(--nav-border)', paddingBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                            <strong style={{ fontSize: '1.1rem' }}>{rev.name}</strong>
+                                            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{rev.date}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '0.75rem' }}>
+                                            {[...Array(5)].map((_, i) => (
+                                                <FaStar key={i} color={i < rev.rating ? "#FFD700" : "#E2E8F0"} size={14} />
+                                            ))}
+                                        </div>
+                                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>{rev.comment}</p>
+                                    </div>
+                                ))}
+                                <button className="btn btn-outline" style={{ width: 'fit-content' }}>Write a Review</button>
                             </div>
                         )}
                     </div>

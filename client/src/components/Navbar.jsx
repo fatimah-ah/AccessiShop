@@ -1,20 +1,12 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaShoppingBag, FaShoppingCart, FaSignOutAlt } from 'react-icons/fa';
+import { useCart } from '../context/CartContext';
 import '../Layout.css';
-
-/**
- * Navbar Component
- * 
- * Accessibility Features:
- * - Semantic <nav> tag
- * - Skip link support (in parent or here if needed, usually global)
- * - Clear focus indicators (via Layout.css)
- * - Large touch targets
- */
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const { cartCount } = useCart();
 
     const handleLogout = () => {
         // Clear local storage
@@ -25,50 +17,70 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar" role="navigation" aria-label="Main Navigation">
-            <Link to="/home" className="brand-link" aria-label="AccessiShop Home">
-                AccessiShop
-            </Link>
+        <header className="navbar-wrapper">
+            <div className="top-bar">
+                <div className="top-bar-contact">
+                    Call Us: +123-456-789 | Sign up and GET 25% OFF for your first order. <Link to="/signup" style={{ color: 'var(--color-accent)', fontWeight: '700' }}>Sign up now</Link>
+                </div>
+                <div className="top-bar-links">
+                    <a href="#" className="top-bar-link">FB</a>
+                    <a href="#" className="top-bar-link">TW</a>
+                    <a href="#" className="top-bar-link">IG</a>
+                    <a href="#" className="top-bar-link">YT</a>
+                </div>
+            </div>
 
-            <ul className="nav-links">
-                <li className="nav-item">
-                    <NavLink
-                        to="/home"
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                    >
-                        <FaHome style={{ marginRight: '0.5rem' }} /> Home
-                    </NavLink>
-                </li>
+            <nav className="navbar" role="navigation" aria-label="Main Navigation">
+                <Link to="/home" className="brand-link" aria-label="AccessiShop Home">
+                    AccessiShop
+                </Link>
 
-                <li className="nav-item">
-                    <NavLink
-                        to="/shop"
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                    >
-                        <FaShoppingBag style={{ marginRight: '0.5rem' }} /> Shop
-                    </NavLink>
-                </li>
-                <li className="nav-item">
-                    <NavLink
-                        to="/cart"
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                    >
-                        <FaShoppingCart style={{ marginRight: '0.5rem' }} /> Cart
-                    </NavLink>
-                </li>
+                <ul className="nav-links">
+                    <li className="nav-item">
+                        <NavLink
+                            to="/home"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                        >
+                            Home
+                        </NavLink>
+                    </li>
 
-                <li className="nav-item">
-                    <button
-                        onClick={handleLogout}
-                        className="nav-btn"
-                        aria-label="Logout from your account"
-                    >
-                        Logout
-                        <FaSignOutAlt style={{ marginLeft: '0.5rem' }} />
-                    </button>
-                </li>
-            </ul>
-        </nav>
+                    <li className="nav-item">
+                        <NavLink
+                            to="/shop"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                        >
+                            Shop
+                        </NavLink>
+                    </li>
+
+                    <li className="nav-item">
+                        <NavLink
+                            to="/cart"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            style={{ position: 'relative' }}
+                        >
+                            <FaShoppingCart size={20} />
+                            {cartCount > 0 && (
+                                <span className="cart-badge-count">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </NavLink>
+                    </li>
+
+                    <li className="nav-item">
+                        <button
+                            onClick={handleLogout}
+                            className="nav-btn"
+                            aria-label="Logout from your account"
+                        >
+                            Logout <FaSignOutAlt style={{ marginLeft: '0.5rem' }} />
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
     );
 };
 

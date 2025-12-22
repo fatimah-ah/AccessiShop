@@ -6,6 +6,9 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductView from './pages/ProductView';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import { CartProvider } from './context/CartContext';
 import './Auth.css';
 
 /**
@@ -22,18 +25,22 @@ import './Auth.css';
 
 function App() {
     return (
-        <Router>
-            <div className="app">
-                <Routes>
-                    <Route path="/" element={<Welcome />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/shop" element={<Shop />} />
-                    <Route path="/product/:id" element={<ProductView />} />
-                </Routes>
-            </div>
-        </Router>
+        <CartProvider>
+            <Router>
+                <div className="app">
+                    <Routes>
+                        <Route path="/" element={<Welcome />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/shop" element={<Shop />} />
+                        <Route path="/product/:id" element={<ProductView />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                    </Routes>
+                </div>
+            </Router>
+        </CartProvider>
     );
 }
 

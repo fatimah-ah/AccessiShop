@@ -1,15 +1,16 @@
-import React from 'react';
 import { FaShoppingCart, FaEye, FaRegHeart, FaExchangeAlt, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import '../Layout.css';
 
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
+    const { addToCart } = useCart();
     const imageSrc = product.image || 'https://via.placeholder.com/300x200?text=No+Image';
 
     const handleNavigate = (e) => {
-        // Prevent navigation if clicking action buttons
-        if (e.target.closest('.card-action-btn') || e.target.closest('.btn-primary')) return;
+        // Prevent navigation if clicking action buttons or Add to Cart
+        if (e.target.closest('.card-action-btn') || e.target.closest('.btn-cart-small')) return;
         navigate(`/product/${product._id}`);
     };
 
@@ -64,7 +65,16 @@ const ProductCard = ({ product }) => {
                         <span className="card-price">${product.price.toFixed(2)}</span>
                         <span className="card-price-original">${(product.price * 1.5).toFixed(2)}</span>
                     </div>
-                    {/* Optional: Add to Cart button if needed, but the image shows a cleaner look with icons */}
+                    <button
+                        className="btn-cart-small"
+                        aria-label="Add to cart"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(product);
+                        }}
+                    >
+                        <FaShoppingCart />
+                    </button>
                 </div>
             </div>
         </article>
