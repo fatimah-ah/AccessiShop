@@ -15,8 +15,8 @@ FROM nginx:stable-alpine
 # Copy build output to nginx
 COPY --from=build-stage /app/build /usr/share/nginx/html
 
-# Copy custom nginx config if you have one, otherwise default works for simple React apps
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy custom nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

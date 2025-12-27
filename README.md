@@ -11,6 +11,50 @@ AccessiShop is an accessibility-focused e-commerce web application built with th
 - **Responsive Design**: Built to work across different screen sizes.
 - **Dockerized**: Entire stack runs within Docker containers for easy deployment.
 
+## Accessibility and Alternative Navigation
+
+This project is built with an "Accessibility First" mindset, ensuring that users who cannot or prefer not to use a traditional mouse and keyboard can still shop with ease.
+
+### Alternative Navigation Options
+
+- **Smart Keyboard Navigation**: Users can navigate the entire website using only the **Tab** key. The focus follows a logical order (from top to bottom, left to right), ensuring that users don't get lost.
+- **Visible Focus Indicators**: Every interactive element (buttons, links, inputs) has a clear, high-contrast visual outline when selected via keyboard, so users always know exactly where they are.
+- **Skip to Content**: A hidden "Skip to content" link is available for keyboard users, allowing them to jump over the navigation menu and get straight to the products.
+
+### Keyboard-Only Usage
+
+Everything you can do with a mouse, you can do with a keyboard:
+- Browse products and categories.
+- Open product details and view images.
+- Add items to the cart and update quantities.
+- Complete the login and signup processes safely.
+
+### Voice-Based Interaction (Web Speech API)
+
+For users who find typing difficult, we have integrated voice-based searching:
+- **How it works**: Simply click the microphone icon in any search bar and speak.
+- **Speech-to-Text**: The website uses the Web Speech API to convert your spoken words into text instantly.
+- **Effortless Searching**: Spoken words automatically filter the product catalog, removing the need for high-speed typing.
+
+### Accessibility-Focused Features
+
+- **Clear Labels**: Every input field (like Email or Password) has a visible, high-contrast label so users know exactly what info is required.
+- **Semantic HTML**: We use meaningful HTML tags (like `<button>`, `<nav>`, and `<main>`) so that Screen Readers can accurately describe the page to visually impaired users.
+- **Large Interaction Areas**: Buttons and links are designed with enough padding to be easily clickable or selectable.
+
+### Fallback Behavior
+
+We have designed the system to be resilient:
+- **No Speech Support?**: If a browser doesn't support voice input, the microphone icon is automatically hidden, and the user can still use the traditional keyboard or screen-reader navigation.
+- **Permission Denied?**: If a user denies microphone access, the system gracefully stays on text-based input, ensuring no functionality is broken.
+
+### Who Benefits?
+
+- **Users with motor impairments** who find it difficult to use a mouse or keyboard.
+- **Users with visual challenges** who rely on screen readers and keyboard sequences.
+- **Hands-free users** who prefer speaking over typing.
+- **Everyone** who appreciates a clean, intuitive, and high-contrast user interface.
+
 ## Technology Stack
 
 - **Frontend**: React, React Router, CSS
@@ -42,7 +86,7 @@ AccessiShop/
 
 ### Running with Docker
 
-The entire application can be started with a single command:
+Run the following command in the **project root folder** (where the `docker-compose.yml` file is located) to start the entire application:
 
 ```bash
 docker compose up --build
