@@ -285,25 +285,34 @@ h6 {
   background-color: white;
 }
 
-/* Voice Button */
-.voice-button {
+/* Input Actions (Eye toggle, Voice) */
+.input-actions {
   position: absolute;
-  right: 0.75rem;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.input-action-btn, .voice-button {
   background: transparent;
   border: none;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
-  color: var(--color-primary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.voice-button:hover {
+.input-action-btn:hover, .voice-button:hover {
   background-color: rgba(58, 90, 64, 0.1);
+  color: var(--color-primary);
 }
 
 .voice-button.listening {

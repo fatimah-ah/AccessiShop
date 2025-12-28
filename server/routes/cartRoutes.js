@@ -3,7 +3,8 @@ import {
   getCart,
   addItemToCart,
   removeItemFromCart,
-  clearCart
+  clearCart,
+  updateItemQuantity
 } from "../controllers/cartController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
@@ -19,9 +20,12 @@ router.get("/", getCart);
 router.post("/add", addItemToCart);
 
 // Remove product from cart
-router.post("/remove", removeItemFromCart);
+router.delete("/remove", removeItemFromCart);
+
+// Update item quantity in cart
+router.put("/update", updateItemQuantity);
 
 // Clear cart
-router.post("/clear", clearCart);
+router.delete("/clear", clearCart);
 
 export default router;

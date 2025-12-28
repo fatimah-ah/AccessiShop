@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-/**
- * HeroCarousel - Accessible Image Slider
- * 
- * Features:
- * - Auto-rotation (2.5s)
- * - Pause on hover (accessibility best practice)
- * - Keyboard accessible controls
- * - High contrast controls
- */
-
 const HeroCarousel = ({ images }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);

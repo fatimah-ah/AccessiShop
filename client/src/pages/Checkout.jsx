@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ServicePoints from '../components/ServicePoints';
+import axios from 'axios';
 import '../Layout.css';
 
 const Checkout = () => {
     const navigate = useNavigate();
-    const { cart, cartTotal, clearCart } = useCart();
+    const location = useLocation();
+    const { cart, cartTotal, clearCart, refreshCart } = useCart();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    // Get selected item IDs from navigation state
+    const selectedItemIds = location.state?.selectedItemIds || [];
+
+    // Filter cart to show only selected items
+    const selectedCartItems = cart.filter(item => selectedItemIds.includes(item._id));
+    const selectedTotal = selectedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -16,20 +28,75 @@ const Checkout = () => {
         address: '',
         city: '',
         zip: '',
-        cardNumber: '',
-        expiry: '',
-        cvv: ''
+        country: 'United States',
+        phone: '',
+        paymentMethod: 'credit_card'
     });
+
+    useEffect(() => {
+        // Redirect if cart is empty or no items selected
+        if (cart.length === 0 || selectedItemIds.length === 0) {
+            navigate('/cart');
+        }
+    }, [cart, selectedItemIds, navigate]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        setError(''); // Clear error on input change
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('Order placed successfully!');
-        navigate('/home');
+        setLoading(true);
+        setError('');
+
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/login');
+                return;
+            }
+
+            // Prepare shipping info
+            const shippingInfo = {
+                fullName: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                address: formData.address,
+                city: formData.city,
+                postalCode: formData.zip,
+                country: formData.country,
+                phone: formData.phone
+            };
+
+            // Create order
+            const response = await axios.post('/api/orders', {
+                shippingInfo,
+                paymentMethod: formData.paymentMethod,
+                selectedItemIds: selectedItemIds  // Pass selected items to backend
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            // Clear cart on success
+            clearCart();
+
+            // Navigate to order confirmation with order data
+            navigate('/order-confirmation', {
+                state: { order: response.data.order }
+            });
+
+        } catch (err) {
+            console.error('Order creation error:', err);
+            setError(
+                err.response?.data?.message ||
+                'Failed to place order. Please try again.'
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -95,7 +162,7 @@ const Checkout = () => {
                     <aside className="order-summary-card" style={{ background: 'white', padding: '2.5rem', borderRadius: 'var(--radius-lg)', height: 'fit-content', position: 'sticky', top: '120px', boxShadow: 'var(--shadow-md)', border: '1px solid var(--nav-border)' }}>
                         <h3 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>Your Order</h3>
                         <div className="summary-details-minimal" style={{ display: 'grid', gap: '1rem' }}>
-                            {cart.map(item => (
+                            {selectedCartItems.map(item => (
                                 <div key={item._id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
                                     <span>{item.title} x {item.quantity}</span>
                                     <span style={{ fontWeight: '600' }}>${(item.price * item.quantity).toFixed(2)}</span>
@@ -104,7 +171,7 @@ const Checkout = () => {
                             <div style={{ borderTop: '1px solid var(--nav-border)', margin: '1rem 0', paddingTop: '1rem' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                     <span>Subtotal</span>
-                                    <span>${cartTotal.toFixed(2)}</span>
+                                    <span>${selectedTotal.toFixed(2)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10B981', fontWeight: '600' }}>
                                     <span>Shipping</span>
@@ -112,7 +179,7 @@ const Checkout = () => {
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontSize: '1.4rem', fontWeight: '800', color: 'var(--color-primary)' }}>
                                     <span>Total</span>
-                                    <span>${cartTotal.toFixed(2)}</span>
+                                    <span>${selectedTotal.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>

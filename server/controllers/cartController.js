@@ -95,3 +95,38 @@ export const clearCart = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+/**
+ * @desc    Update item quantity in cart
+ * @route   PUT /api/cart/update
+ * @access  Private
+ */
+export const updateItemQuantity = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    if (!productId || quantity === undefined) {
+      return res.status(400).json({ message: "Product ID and quantity are required" });
+    }
+
+    let cart = await Cart.findOne({ userId: req.user._id });
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    const item = cart.items.find(item => item.productId.toString() === productId);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    if (quantity <= 0) {
+      cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+    } else {
+      item.quantity = quantity;
+    }
+
+    await cart.save();
+    res.json({ message: "Cart updated", cart });
+  } catch (error) {
+    console.error("Update cart error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

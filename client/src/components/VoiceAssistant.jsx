@@ -82,7 +82,7 @@ const VoiceAssistant = () => {
 
     const checkQuickCommand = (text) => {
         const cmd = text.trim().toLowerCase();
-        if (cmd === 'home' || cmd === 'shop' || cmd === 'cart') {
+        if (cmd === 'home' || cmd === 'shop' || cmd === 'cart' || cmd === 'login' || cmd === 'signup') {
             handleCommand(cmd);
         }
     };
@@ -92,7 +92,7 @@ const VoiceAssistant = () => {
         const cmd = command.toLowerCase().trim();
 
         // Search detection
-        const searchTriggers = ['search', 'find', 'look for', 'lookup'];
+        const searchTriggers = ['search item', 'search', 'find', 'look for', 'lookup'];
         for (const trigger of searchTriggers) {
             if (cmd.startsWith(trigger)) {
                 const query = cmd.replace(trigger, '').trim();
@@ -110,8 +110,15 @@ const VoiceAssistant = () => {
             executeAction('Navigating to Shop...', '/shop');
         } else if (cmd.includes('home') || cmd.includes('welcome')) {
             executeAction('Navigating to Home...', '/home');
+        } else if (cmd.includes('login')) {
+            executeAction('Navigating to Login...', '/login');
+        } else if (cmd.includes('signup')) {
+            executeAction('Navigating to Signup...', '/signup');
+        } else if (cmd.includes('checkout')) {
+            executeAction('Proceeding to Checkout...', '/checkout');
         }
     };
+
 
     const executeAction = (msg, path) => {
         processingRef.current = true;

@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
     default: "user"   // "admin" for product management
   }
 }, {
-  timestamps: true     // auto-createdAt & updatedAt
+  timestamps: true,     // auto-createdAt & updatedAt
+  collection: 'users'
 });
 
 const User = mongoose.model("User", userSchema);

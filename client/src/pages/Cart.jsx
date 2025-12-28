@@ -10,6 +10,50 @@ import '../Layout.css';
 const Cart = () => {
     const { cart, updateQuantity, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
     const navigate = useNavigate();
+    const [selectedItems, setSelectedItems] = React.useState(new Set());
+
+    // Initialize all items as selected when cart changes
+    React.useEffect(() => {
+        if (cart.length > 0) {
+            setSelectedItems(new Set(cart.map(item => item._id)));
+        } else {
+            setSelectedItems(new Set());
+        }
+    }, [cart.length]);
+
+    // Handle individual item selection
+    const handleItemSelect = (itemId) => {
+        setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(itemId)) {
+                newSet.delete(itemId);
+            } else {
+                newSet.add(itemId);
+            }
+            return newSet;
+        });
+    };
+
+    // Handle select all toggle
+    const handleSelectAll = () => {
+        if (selectedItems.size === cart.length) {
+            setSelectedItems(new Set());
+        } else {
+            setSelectedItems(new Set(cart.map(item => item._id)));
+        }
+    };
+
+    // Calculate totals for selected items only
+    const selectedCartItems = cart.filter(item => selectedItems.has(item._id));
+    const selectedTotal = selectedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const selectedCount = selectedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+    // Handle checkout navigation
+    const handleCheckout = () => {
+        navigate('/checkout', {
+            state: { selectedItemIds: Array.from(selectedItems) }
+        });
+    };
 
     return (
         <div className="app-layout">
@@ -43,6 +87,15 @@ const Cart = () => {
                                 <table className="cart-table">
                                     <thead>
                                         <tr>
+                                            <th style={{ width: '50px' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedItems.size === cart.length && cart.length > 0}
+                                                    onChange={handleSelectAll}
+                                                    aria-label="Select all items"
+                                                    style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                                                />
+                                            </th>
                                             <th></th>
                                             <th>Product</th>
                                             <th>Price</th>
@@ -52,7 +105,16 @@ const Cart = () => {
                                     </thead>
                                     <tbody>
                                         {cart.map(item => (
-                                            <tr key={item._id}>
+                                            <tr key={item._id} style={{ opacity: selectedItems.has(item._id) ? 1 : 0.6 }}>
+                                                <td>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedItems.has(item._id)}
+                                                        onChange={() => handleItemSelect(item._id)}
+                                                        aria-label={`Select ${item.title}`}
+                                                        style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                                                    />
+                                                </td>
                                                 <td>
                                                     <button
                                                         className="delete-btn-x"
@@ -102,12 +164,12 @@ const Cart = () => {
                                 <h3>Order Summary</h3>
                                 <div className="summary-details-minimal">
                                     <div className="summary-row-minimal">
-                                        <span>Items</span>
-                                        <span>{cartCount}</span>
+                                        <span>Selected Items</span>
+                                        <span>{selectedCount} of {cartCount}</span>
                                     </div>
                                     <div className="summary-row-minimal">
                                         <span>Sub Total</span>
-                                        <span>${cartTotal.toFixed(2)}</span>
+                                        <span>${selectedTotal.toFixed(2)}</span>
                                     </div>
                                     <div className="summary-row-minimal">
                                         <span>Shipping</span>
@@ -123,11 +185,19 @@ const Cart = () => {
                                     </div>
                                     <div className="summary-row-minimal total">
                                         <span>Total</span>
-                                        <span>${cartTotal.toFixed(2)}</span>
+                                        <span>${selectedTotal.toFixed(2)}</span>
                                     </div>
                                 </div>
-                                <button className="btn-checkout-full" onClick={() => navigate('/checkout')}>
-                                    Proceed to Checkout
+                                <button
+                                    className="btn-checkout-full"
+                                    onClick={handleCheckout}
+                                    disabled={selectedItems.size === 0}
+                                    style={{
+                                        opacity: selectedItems.size === 0 ? 0.5 : 1,
+                                        cursor: selectedItems.size === 0 ? 'not-allowed' : 'pointer'
+                                    }}
+                                >
+                                    Proceed to Checkout ({selectedItems.size} item{selectedItems.size !== 1 ? 's' : ''})
                                 </button>
                             </div>
                         </aside>

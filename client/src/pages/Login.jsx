@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Input from '../components/Input';
 import { login } from '../services/api';
+import { useCart } from '../context/CartContext';
 
 /**
  * Login Screen
@@ -15,6 +16,7 @@ import { login } from '../services/api';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { mergeCart } = useCart();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -66,6 +68,12 @@ const Login = () => {
             localStorage.setItem('token', result.data.token);
             localStorage.setItem('user', JSON.stringify(result.data.user));
 
+            // Merge guest cart if exists
+            const guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (guestCart.length > 0) {
+                await mergeCart(guestCart, result.data.token);
+            }
+
             setMessage({ text: 'Login successful! Redirecting...', type: 'success' });
 
             // Redirect after short delay
@@ -91,7 +99,7 @@ const Login = () => {
                         onChange={(e) => handleChange({ target: { id: 'email', value: e.target.value } })}
                         placeholder="your.email@example.com"
                         required
-                        enableVoice={true}
+                        enableVoice={false}
                     />
 
                     <Input
@@ -101,7 +109,7 @@ const Login = () => {
                         onChange={(e) => handleChange({ target: { id: 'password', value: e.target.value } })}
                         placeholder="Enter your password"
                         required
-                        enableVoice={true}
+                        enableVoice={false}
                     />
 
                     {/* Error/Success Message with aria-live */}

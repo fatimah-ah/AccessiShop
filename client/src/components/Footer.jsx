@@ -13,7 +13,7 @@ const Footer = () => {
         }}>
             <div className="main-content" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '4rem' }}>
                 <div className="footer-col">
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white' }}>
                         AccessiShop
                     </h2>
                     <p style={{ opacity: 0.8, marginBottom: '2rem', lineHeight: '1.8' }}>
@@ -28,7 +28,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-col">
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.5rem' }}>Company</h3>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>Company</h3>
                     <ul style={{ listStyle: 'none', display: 'grid', gap: '0.75rem', opacity: 0.8 }}>
                         <li>About Us</li>
                         <li>Careers</li>
@@ -38,7 +38,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-col">
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.5rem' }}>Customer Service</h3>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>Customer Service</h3>
                     <ul style={{ listStyle: 'none', display: 'grid', gap: '0.75rem', opacity: 0.8 }}>
                         <li>Help Center</li>
                         <li>Returns & Refunds</li>
@@ -48,7 +48,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-col">
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.5rem' }}>Newsletter</h3>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>Newsletter</h3>
                     <p style={{ opacity: 0.8, marginBottom: '1rem' }}>Enter your email to get latest updates.</p>
                     <div style={{ display: 'flex' }}>
                         <input

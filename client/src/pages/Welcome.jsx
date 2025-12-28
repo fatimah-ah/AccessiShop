@@ -2,15 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Auth.css';
 
-/**
- * Welcome Screen - Landing Page
- * 
- * Simple, clean entry point with:
- * - App name and tagline
- * - Two clear action buttons
- * - Centered card layout
- */
-
 const Welcome = () => {
     const navigate = useNavigate();
 

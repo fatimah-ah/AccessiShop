@@ -1,15 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaMicrophone, FaStop } from 'react-icons/fa';
-
-/**
- * Reusable Input Component with Optional Voice Input
- * 
- * Features:
- * - Label above input (accessible, not placeholder-only)
- * - Optional voice-to-text using Web Speech API
- * - High contrast, large readable font
- * - ARIA attributes for accessibility
- */
+import { FaMicrophone, FaStop, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Input = ({
     label,
@@ -23,6 +13,7 @@ const Input = ({
 }) => {
     const [isListening, setIsListening] = useState(false);
     const [isVoiceSupported, setIsVoiceSupported] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const recognitionRef = useRef(null);
 
     // Check if Web Speech API is supported
@@ -72,6 +63,13 @@ const Input = ({
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    // Determine the actual input type
+    const inputType = type === 'password' && showPassword ? 'text' : type;
+
     return (
         <div className="input-wrapper">
             <label htmlFor={label} className="input-label">
@@ -80,7 +78,7 @@ const Input = ({
             <div className="input-container">
                 <input
                     id={label}
-                    type={type}
+                    type={inputType}
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
@@ -89,20 +87,36 @@ const Input = ({
                     aria-describedby={ariaDescribedBy || undefined}
                     aria-required={required}
                 />
-                {isVoiceSupported && (
-                    <button
-                        type="button"
-                        onClick={toggleVoiceInput}
-                        className={`voice-button ${isListening ? 'listening' : ''}`}
-                        aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
-                        title={isListening ? 'Stop listening' : 'Click to speak'}
-                    >
-                        {isListening ? <FaStop /> : <FaMicrophone />}
-                    </button>
-                )}
+
+                <div className="input-actions">
+                    {type === 'password' && (
+                        <button
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className="input-action-btn"
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            title={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    )}
+
+                    {isVoiceSupported && (
+                        <button
+                            type="button"
+                            onClick={toggleVoiceInput}
+                            className={`voice-button ${isListening ? 'listening' : ''}`}
+                            aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+                            title={isListening ? 'Stop listening' : 'Click to speak'}
+                        >
+                            {isListening ? <FaStop /> : <FaMicrophone />}
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
 };
+
 
 export default Input;

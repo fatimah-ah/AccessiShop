@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Input from '../components/Input';
 import { signup } from '../services/api';
+import { useCart } from '../context/CartContext';
 
 /**
  * Signup Screen
@@ -15,6 +16,7 @@ import { signup } from '../services/api';
 
 const Signup = () => {
     const navigate = useNavigate();
+    const { mergeCart } = useCart();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -69,7 +71,19 @@ const Signup = () => {
         setIsLoading(false);
 
         if (result.success) {
-            setMessage({ text: 'Signup successful! Redirecting to login...', type: 'success' });
+            // Store token and user data (similar to login)
+            if (result.data.token) {
+                localStorage.setItem('token', result.data.token);
+                localStorage.setItem('user', JSON.stringify(result.data.user));
+
+                // Merge guest cart if exists
+                const guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                if (guestCart.length > 0) {
+                    await mergeCart(guestCart, result.data.token);
+                }
+            }
+
+            setMessage({ text: 'Signup successful! Redirecting...', type: 'success' });
 
             // Redirect to login after short delay
             setTimeout(() => {
@@ -94,7 +108,7 @@ const Signup = () => {
                         onChange={(e) => handleChange({ target: { id: 'name', value: e.target.value } })}
                         placeholder="Your full name"
                         required
-                        enableVoice={true}
+                        enableVoice={false}
                     />
 
                     <Input
@@ -104,7 +118,7 @@ const Signup = () => {
                         onChange={(e) => handleChange({ target: { id: 'email', value: e.target.value } })}
                         placeholder="your.email@example.com"
                         required
-                        enableVoice={true}
+                        enableVoice={false}
                     />
 
                     <Input
@@ -114,7 +128,7 @@ const Signup = () => {
                         onChange={(e) => handleChange({ target: { id: 'password', value: e.target.value } })}
                         placeholder="At least 6 characters"
                         required
-                        enableVoice={true}
+                        enableVoice={false}
                     />
 
                     {/* Error/Success Message with aria-live */}

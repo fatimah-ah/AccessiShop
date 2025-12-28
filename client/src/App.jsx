@@ -8,6 +8,7 @@ import Shop from './pages/Shop';
 import ProductView from './pages/ProductView';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
 import { CartProvider } from './context/CartContext';
 import VoiceAssistant from './components/VoiceAssistant';
 import './Auth.css';
@@ -38,6 +39,7 @@ function App() {
                         <Route path="/product/:id" element={<ProductView />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/order-confirmation" element={<OrderConfirmation />} />
                     </Routes>
                     <VoiceAssistant />
                 </div>

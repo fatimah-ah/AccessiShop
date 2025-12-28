@@ -15,11 +15,9 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/accessishop
+      - MONGO_URI=mongodb+srv://fatimah:fatimah123@cluster0.fawev10.mongodb.net/accessishop?retryWrites=true&w=majority
       - JWT_SECRET=your_jwt_secret_here
       - PORT=5000
-    depends_on:
-      - mongodb
 
   # Frontend UI
   frontend:
