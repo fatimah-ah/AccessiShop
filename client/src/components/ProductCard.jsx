@@ -1,11 +1,13 @@
 import { FaShoppingCart, FaEye, FaRegHeart, FaMicrophone, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useSpeech } from '../context/SpeechContext';
 import '../Layout.css';
 
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
+    const { speak } = useSpeech();
     const imageSrc = product.image || 'https://via.placeholder.com/300x200?text=No+Image';
 
     const handleNavigate = (e) => {
@@ -16,9 +18,8 @@ const ProductCard = ({ product }) => {
 
     const handleVoiceRead = (e) => {
         e.stopPropagation();
-        const msg = new SpeechSynthesisUtterance();
-        msg.text = `Product: ${product.title}. Price: ${product.price.toFixed(2)} dollars. Category: ${product.category}. Description: ${product.description || 'No description available.'}`;
-        window.speechSynthesis.speak(msg);
+        const text = `Product: ${product.title}. Price: ${product.price.toFixed(2)} dollars. Category: ${product.category}. Description: ${product.description || 'No description available.'}`;
+        speak(text);
     };
 
     return (

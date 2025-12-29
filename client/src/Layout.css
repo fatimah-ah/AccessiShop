@@ -778,6 +778,160 @@ body {
     }
 }
 
+/* ===== CART NOTIFICATION BAR ===== */
+.cart-notification-bar {
+    position: fixed;
+    top: 110px;
+    /* Below navbar, same as speech indicator */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10600;
+    /* Slightly above speech indicator to stack if both active */
+    background: var(--color-secondary);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+    animation: slideDownIndicator 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: pointer;
+}
+
+.cart-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+}
+
+.cart-success-icon {
+    font-size: 1.2rem;
+}
+
+.cart-msg-text {
+    white-space: nowrap;
+}
+
+/* Custom Checkbox Design (Check Circle) */
+.custom-checkbox {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--nav-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    color: transparent;
+    font-size: 1.1rem;
+}
+
+.custom-checkbox:hover {
+    border-color: var(--color-secondary);
+}
+
+.custom-checkbox.checked {
+    border-color: var(--color-secondary);
+    background: var(--color-secondary);
+    color: white;
+}
+
+/* ===== SPEECH INDICATOR ===== */
+.speech-indicator-bar {
+    position: fixed;
+    top: 110px;
+    /* Below navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10500;
+    background: var(--color-primary);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+    animation: slideDownIndicator 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.speech-indicator-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+}
+
+.speech-icon-anim {
+    animation: heartbeat 1.5s infinite;
+}
+
+.reading-animation {
+    display: flex;
+    gap: 4px;
+}
+
+.reading-animation span {
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    animation: reading-dot 1.4s infinite ease-in-out both;
+}
+
+.reading-animation span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.reading-animation span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes reading-dot {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1.0);
+    }
+}
+
+@keyframes slideDownIndicator {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+
+    14% {
+        transform: scale(1.1);
+    }
+
+    28% {
+        transform: scale(1);
+    }
+
+    42% {
+        transform: scale(1.1);
+    }
+
+    70% {
+        transform: scale(1);
+    }
+}
+
 /* ===== INPUTS & FORMS ===== */
 .input-wrapper {
     margin-bottom: 1.5rem;

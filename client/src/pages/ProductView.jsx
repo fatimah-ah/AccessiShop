@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
+import { useSpeech } from '../context/SpeechContext';
 import { FaStar, FaMinus, FaPlus, FaShoppingCart, FaBolt, FaArrowLeft, FaChevronLeft, FaChevronRight, FaRegHeart, FaShareAlt } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -13,6 +14,7 @@ const ProductView = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
+    const { isReading, speak, stop } = useSpeech();
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -48,9 +50,12 @@ const ProductView = () => {
 
     const handleSpeakDetails = () => {
         if (!isSpeakSupported || !product) return;
-        const msg = new SpeechSynthesisUtterance();
-        msg.text = `Product: ${product.title}. Price: ${product.price} dollars. Description: ${product.simpleDescription || product.description}`;
-        window.speechSynthesis.speak(msg);
+        if (isReading) {
+            stop();
+            return;
+        }
+        const text = `Product: ${product.title}. Price: ${product.price} dollars. Description: ${product.simpleDescription || product.description}`;
+        speak(text);
     };
 
     const handleQuantityChange = (type) => {
@@ -217,11 +222,11 @@ const ProductView = () => {
 
                         {isSpeakSupported && (
                             <button
-                                className="btn btn-outline"
+                                className={`btn ${isReading ? 'btn-primary' : 'btn-outline'}`}
                                 onClick={handleSpeakDetails}
-                                style={{ marginTop: '2rem', width: '100%', borderStyle: 'dashed' }}
+                                style={{ marginTop: '2rem', width: '100%', borderStyle: isReading ? 'solid' : 'dashed' }}
                             >
-                                Read product details (Voice)
+                                {isReading ? 'Stop Reading' : 'Read product details (Voice)'}
                             </button>
                         )}
                     </div>

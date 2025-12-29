@@ -10,7 +10,10 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import { CartProvider } from './context/CartContext';
+import { SpeechProvider } from './context/SpeechContext';
 import VoiceAssistant from './components/VoiceAssistant';
+import CartPopup from './components/CartPopup';
+import SpeechIndicator from './components/SpeechIndicator';
 import './Auth.css';
 
 /**
@@ -28,22 +31,26 @@ import './Auth.css';
 function App() {
     return (
         <CartProvider>
-            <Router>
-                <div className="app">
-                    <Routes>
-                        <Route path="/" element={<Welcome />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/shop" element={<Shop />} />
-                        <Route path="/product/:id" element={<ProductView />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route path="/order-confirmation" element={<OrderConfirmation />} />
-                    </Routes>
-                    <VoiceAssistant />
-                </div>
-            </Router>
+            <SpeechProvider>
+                <Router>
+                    <div className="app">
+                        <Routes>
+                            <Route path="/" element={<Welcome />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/signup" element={<Signup />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/shop" element={<Shop />} />
+                            <Route path="/product/:id" element={<ProductView />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                        </Routes>
+                        <VoiceAssistant />
+                        <CartPopup />
+                        <SpeechIndicator />
+                    </div>
+                </Router>
+            </SpeechProvider>
         </CartProvider>
     );
 }

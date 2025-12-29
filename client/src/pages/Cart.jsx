@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { FaPlus, FaMinus, FaTimes, FaShoppingCart, FaArrowLeft } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaTimes, FaShoppingCart, FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ServicePoints from '../components/ServicePoints';
@@ -88,13 +88,16 @@ const Cart = () => {
                                     <thead>
                                         <tr>
                                             <th style={{ width: '50px' }}>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedItems.size === cart.length && cart.length > 0}
-                                                    onChange={handleSelectAll}
+                                                <div
+                                                    className={`custom-checkbox ${selectedItems.size === cart.length && cart.length > 0 ? 'checked' : ''}`}
+                                                    onClick={handleSelectAll}
+                                                    role="checkbox"
+                                                    aria-checked={selectedItems.size === cart.length && cart.length > 0}
+                                                    tabIndex="0"
                                                     aria-label="Select all items"
-                                                    style={{ cursor: 'pointer', width: '18px', height: '18px' }}
-                                                />
+                                                >
+                                                    {selectedItems.size === cart.length && cart.length > 0 && <FaCheckCircle />}
+                                                </div>
                                             </th>
                                             <th></th>
                                             <th>Product</th>
@@ -107,13 +110,16 @@ const Cart = () => {
                                         {cart.map(item => (
                                             <tr key={item._id} style={{ opacity: selectedItems.has(item._id) ? 1 : 0.6 }}>
                                                 <td>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedItems.has(item._id)}
-                                                        onChange={() => handleItemSelect(item._id)}
+                                                    <div
+                                                        className={`custom-checkbox ${selectedItems.has(item._id) ? 'checked' : ''}`}
+                                                        onClick={() => handleItemSelect(item._id)}
+                                                        role="checkbox"
+                                                        aria-checked={selectedItems.has(item._id)}
+                                                        tabIndex="0"
                                                         aria-label={`Select ${item.title}`}
-                                                        style={{ cursor: 'pointer', width: '18px', height: '18px' }}
-                                                    />
+                                                    >
+                                                        {selectedItems.has(item._id) && <FaCheckCircle />}
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <button

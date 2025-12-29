@@ -8,6 +8,7 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [popupState, setPopupState] = useState({ isOpen: false, product: null });
 
     // Load cart from backend on mount (if user is logged in)
     useEffect(() => {
@@ -59,6 +60,9 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = async (product, quantity = 1) => {
         const token = localStorage.getItem('token');
+
+        // Show popup
+        setPopupState({ isOpen: true, product });
 
         // Update local state immediately for better UX
         setCart(prevCart => {
@@ -201,8 +205,14 @@ export const CartProvider = ({ children }) => {
     const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
+    const closePopup = () => setPopupState({ isOpen: false, product: null });
+
     return (
-        <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart, refreshCart, mergeCart, cartTotal, cartCount, loading }}>
+        <CartContext.Provider value={{
+            cart, addToCart, updateQuantity, removeFromCart, clearCart,
+            refreshCart, mergeCart, cartTotal, cartCount, loading,
+            popupState, closePopup
+        }}>
             {children}
         </CartContext.Provider>
     );
